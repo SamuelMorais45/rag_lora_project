@@ -1,8 +1,11 @@
+from pydantic import BaseModel, Field
+
+
 class ChatRequest(BaseModel):
     model_id: str = Field(
         ...,
         description="ID do modelo registrado na API",
-        examples=["causal-gpt2-medium", "seq2seq-flan-t5"],
+        examples=["causal-gpt-neo-125m", "causal-opt-1.3b", "seq2seq-mt5-small", "seq2seq-bart-large"],
     )
     instruction: str = Field(
         ...,
@@ -17,10 +20,12 @@ class ChatRequest(BaseModel):
         description="Número máximo de tokens a gerar",
     )
 
+
 class ChatResponse(BaseModel):
     model_id: str
     instruction: str
     response: str
+
 
 class ModelInfo(BaseModel):
     id: str

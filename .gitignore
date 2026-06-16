@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+models/lora_causal_model_1/
+models/lora_causal_model_2/
+models/lora_seq2seq_model_1/
+models/lora_seq2seq_model_2/

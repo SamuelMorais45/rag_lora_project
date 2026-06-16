@@ -3,17 +3,23 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 PROMPT = textwrap.dedent("""
-Você é um especialista que cria datasets de treinamento.
-Com base no trecho abaixo, gere UMA pergunta clara e sua resposta completa.
+Você é um especialista em criação de datasets QA e Retorne um JSON com Pergunta e Resposta
 
-Formato obrigatório:
-PERGUNTA: <pergunta em português>
-RESPOSTA: <resposta completa, mínimo 30 palavras>
+Exemplo:
+
+Trecho:
+ANAC: Agência Nacional de Aviação Civil.
+
+PERGUNTA: O que significa ANAC?
+RESPOSTA: ANAC significa Agência Nacional de Aviação Civil.
+
+Agora faça o mesmo para o trecho abaixo.
 
 Trecho:
 {chunk}
 
-PERGUNTA:""").strip()
+PERGUNTA:
+""").strip()
 
 def load_generator(model_id: str, device: str):
     tok = AutoTokenizer.from_pretrained(model_id)
@@ -26,12 +32,12 @@ def load_generator(model_id: str, device: str):
     return model, tok
 
 def generate_pair(model, tokenizer, chunk: str, device: str) -> dict | None:
-    prompt = PROMPT.format(chunk=chunk[:900])
+    prompt = PROMPT.format(chunk=chunk[:600])
     inputs = tokenizer(prompt, return_tensors="pt",
                        truncation=True, max_length=1024).to(device)
     with torch.no_grad():
         out = model.generate(
-            **inputs, max_new_tokens=300, do_sample=True,
+            **inputs, max_new_tokens=120, do_sample=False,
             temperature=0.7, top_p=0.9,
             pad_token_id=tokenizer.eos_token_id,
         )
